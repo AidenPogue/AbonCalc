@@ -61,7 +61,7 @@ namespace AbonCalc
                     {
                         break;
                     }
-                    if (CurrentChar == '/' | CurrentChar == '*' | CurrentChar == '-' | CurrentChar == '+')
+                    if (CurrentChar == '/' | CurrentChar == '*')
                     {
                      
                         Operator = CurrentChar;
