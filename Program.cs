@@ -30,17 +30,16 @@ namespace AbonCalc
         {
             Console.WriteLine("Error at " + Index + " (" + Char + ")");
         }
-
-        int FindNextOperator(int CurrentIndex)
-        {
-
-        }
         static void Lexer(string Input)
         {
             char[] InputCharArray = Input.ToCharArray();
             //The array of the input string.
-            string[] TempArray;
-            //Array for working with current equation. It's contents are passed to the solver method and returned to be added to temptotal.
+            string Operand1;
+            //The first operand of the current eqation.
+            char Operator = 'n';
+            //The operator of the current equation
+            string Operand2;
+            //The second operand of the current eqation.
             float TempTotal;
             //The current result of the equation. Results from the solver method are applied to this value.
             string CurrentValue = "";
@@ -52,10 +51,26 @@ namespace AbonCalc
             {
                 InputCharArrayIndex++;
 
-                if (CurrentChar == '(') ;
-                //Check for open bracket.
+                if (CurrentChar == '(') //Check for open bracket.
                 {
 
+                }
+                else
+                {
+                    if (CurrentChar == ' ')
+                    {
+                        break;
+                    }
+                    if (CurrentChar == '/' | CurrentChar == '*' | CurrentChar == '-' | CurrentChar == '+')
+                    {
+                     
+                        Operator = CurrentChar;
+                    }
+                    else
+                    {
+                        CurrentValue += InputCharArray[InputCharArrayIndex];
+                        InputCharArray[InputCharArrayIndex] = ' ';
+                    }
                 }
 
             }
