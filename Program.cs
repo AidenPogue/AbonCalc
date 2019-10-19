@@ -32,47 +32,37 @@ namespace AbonCalc
         }
         static void Lexer(string Input)
         {
+
             char[] InputCharArray = Input.ToCharArray();
             //The array of the input string.
-            string Operand1;
+            string Operand1 = "";
             //The first operand of the current eqation.
-            char Operator = 'n';
+            string Operator = "";
             //The operator of the current equation
-            string Operand2;
+            string Operand2 = "";
             //The second operand of the current eqation.
             float TempTotal;
             //The current result of the equation. Results from the solver method are applied to this value.
             string CurrentValue = "";
-            //The curre nt numerical value from the array. Chars from array are added to this string, which is added to the TempArray as a float to be passed to the solver. 
+            //The current numerical value from the array.
             int InputCharArrayIndex = 0;
             //The current index that the Lexer is working at.
+            char CurrentChar = 'n';
+            //The current char at the index of the lexer.
+            bool Lexing = true;
+            //Controls the main while loop.
 
-            foreach (var CurrentChar in InputCharArray)
+            while (Lexing == true) //MAIN LEXER WHILE LOOP.
             {
+                CurrentChar = InputCharArray[InputCharArrayIndex];
+
+                if (InputCharArrayIndex == InputCharArray.Length) // Check if last in array.
+                {
+                    Lexing = false;
+                }
+
+                
                 InputCharArrayIndex++;
-
-                if (CurrentChar == '(') //Check for open bracket.
-                {
-
-                }
-                else
-                {
-                    if (CurrentChar == ' ')
-                    {
-                        break;
-                    }
-                    if (CurrentChar == '/' | CurrentChar == '*')
-                    {
-                     
-                        Operator = CurrentChar;
-                    }
-                    else
-                    {
-                        CurrentValue += InputCharArray[InputCharArrayIndex];
-                        InputCharArray[InputCharArrayIndex] = ' ';
-                    }
-                }
-
             }
         }
         static float Solver(string Op, float Val1, float Val2)
