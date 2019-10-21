@@ -32,14 +32,15 @@ namespace AbonCalc
         }
         static void Lexer(string Input)
         {
-
             char[] InputCharArray = Input.ToCharArray();
-            //The array of the input string.
-            string Operand1 = "";
+            //Char array of the input string.
+            char[] SearchingFor = { '^' };
+            //The operator the lexer is currently searching for.
+            float Operand1 = 0;
             //The first operand of the current eqation.
             string Operator = "";
-            //The operator of the current equation
-            string Operand2 = "";
+            //The operator of the current equation.
+            float Operand2 = 0;
             //The second operand of the current eqation.
             float TempTotal;
             //The current result of the equation. Results from the solver method are applied to this value.
@@ -51,18 +52,16 @@ namespace AbonCalc
             //The current char at the index of the lexer.
             bool Lexing = true;
             //Controls the main while loop.
+            char SearchingForCurrentChar;
 
             while (Lexing == true) //MAIN LEXER WHILE LOOP.
             {
                 CurrentChar = InputCharArray[InputCharArrayIndex];
-
-                if (InputCharArrayIndex == InputCharArray.Length) // Check if last in array.
-                {
-                    Lexing = false;
-                }
-
                 
-                InputCharArrayIndex++;
+                foreach (char jah in SearchingFor); //Iterates through each char in searching for to check if it is the desired operator.
+                {
+                    if (jah == CurrentChar) ;
+                }
             }
         }
         static float Solver(string Op, float Val1, float Val2)
