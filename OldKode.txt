@@ -1,0 +1,115 @@
+        static void Error(int Index, char Char)
+        {
+            Console.WriteLine("Error at " + Index + " (" + Char + ")");
+        }
+
+        static void Lexer(string Input)
+        {
+            string[] InputCharArray = char.ToString(Input.ToCharArray());
+            //Char array of the input string.
+            char[] SearchingFor = { '^' };
+            //The operator the lexer is currently searching for.
+            float Operand1 = 0;
+            //The first operand of the current eqation.
+            string Operator = "";
+            //The operator of the current equation.
+            float Operand2 = 0;
+            //The second operand of the current eqation.
+            float TempTotal;
+            //The current result of the equation. Results from the solver method are applied to this value.
+            float TempResult = 0;
+            //Stores the result of the current equation to be added back into the array.
+            string CurrentValue = "";
+            //The current numerical value from the array.
+            int InputCharArrayIndex = 0;
+            //The current index that the Lexer is working at.
+            char CurrentChar = 'n';
+            //The current char at the index of the lexer.
+            bool Lexing = true;
+            //Controls the main while loop.
+            int CurrentOperatorIndex = 0;
+            //The index in the array of the current operator.
+
+            while (Lexing == true) //MAIN LEXER WHILE LOOP. Stops when no operators are found.
+            {
+                CurrentChar = InputCharArray[InputCharArrayIndex];
+                if (CurrentChar == 'n')
+                {
+                    break;
+                }
+                else
+                {
+                    foreach (char Current in SearchingFor) //Iterates through each char in searching for to check if it is the desired operator.
+                    {
+                        if (Current == CurrentChar)
+                        {
+                            if (Operator == "")
+                            {
+                                Operand1 = float.Parse(CurrentValue);
+                                CurrentValue = "";
+                                Operator = Char.ToString(CurrentChar);
+                                CurrentOperatorIndex = InputCharArrayIndex;
+                            }
+                            else
+                            {
+                                Operand2 = float.Parse(CurrentValue);
+                                CurrentValue = "";
+                                InputCharArray[CurrentOperatorIndex] = Solver(Operator, Operand1, Operand2);
+
+                            }
+                        }
+                    }
+                    InputCharArrayIndex++;
+                }
+            }
+        }
+        static float Solver(string Op, float Val1, float Val2)
+        {
+            float Output;
+        //Operator switchcase
+        switch (Op)
+            {
+                default:
+                    {
+                        Output = 0;
+                        Console.WriteLine("Invalid Operator : " + Op + ".");
+                        break;
+                    }
+
+                case "^":
+                    //Power
+                    {
+                        Output = MathF.Pow(Val1, Val2);
+                        break;
+                    }
+                case "/":
+                    //Divide
+                    {
+                        Output = Val1 / Val2;
+                        break;
+                    }
+                case "*":
+                     //Multiply
+                    {
+                        Output = Val1 * Val2;
+                        break;
+                    }
+                case "+":
+                    //Add
+                    {
+                        Output = Val1 + Val2;
+                        break;
+                    }
+                case "-":
+                    //Subtract
+                    {
+                        Output = Val1 - Val2;
+                        break;
+                    }
+            }
+
+        return Output;
+        }
+            
+
+    }
