@@ -24,21 +24,19 @@ namespace AbonCalc
         static string Lexer(string Input)
         {
             //Var Declarations
-            {
-                string WorkingString = Input; //The string the lexer works with.
-                float Operand1;
-                string Operator;
-                float Operand2;
-                bool Lexing = true;
-                int Iteration; //The index the lexer is currently working at.
-                string CurrentChar; //The char at the current index.
-            }
+            string WorkingString = Input; //The string the lexer works with.
+            float Operand1;
+            string Operator;
+            float Operand2;
+            bool Lexing = true;
+            int Iteration; //The index the lexer is currently working at.
+            string CurrentChar; //The char at the current index.
             //Var Declarations
 
             //MAIN WHILE LOOP
             while (Lexing == true)
             {
-
+                
             }
         }
     }
