@@ -4,7 +4,7 @@ namespace AbonCalc
 {
     class Program
     {
-        
+
         static void Main(string[] args)
         {
             Console.WriteLine("AbonCalc - October 2019");
@@ -17,53 +17,30 @@ namespace AbonCalc
             }
             else
             {
-                Console.WriteLine(Lexer(LastInput));
+                Console.WriteLine(ArrayLexer(LastInput));
             }
         }
 
-        static string Lexer(string Input)
+        static string[] ArrayLexer(string Input)
         {
-            //Var Declarations
-            System.Text.StringBuilder WorkingString = new System.Text.StringBuilder(Input); //The stringbuilder string the lexer works with.
-            float Operand1;
-            char Operator;
-            float Operand2;
-            bool Lexing = true;
-            int Iteration = 0; //The index the lexer is currently working at.
-            char CurrentChar = ' '; //The char at the current index.
-            string CurrenrVal;
-            bool Finished = false; //Set to true when no valid operators are found. 
-            //Var Declarations
+            int Iteration = 0;
+            int CurrentIndexInArray = 0;
+            string[] EquationArray = new string[100];
+            string CurrentValue = string.Empty;
+            char CurrentChar = ' ';
 
-            //MAIN WHILE LOOP
-            while (Lexing == true)
+            while (Iteration != Input.Length)
             {
-                CurrentChar = WorkingString[Iteration];
-                
-                //Check for / and *
-                if ((Char.ToString(CurrentChar).Contains("*/+-^")))
+                if (IsOperator(CurrentChar) == true)
                 {
-                   if ((Char.ToString(CurrentChar).Contains("*/")))
-                   {
-
-                   }
+                    EquationArray[CurrentIndexInArray] = CurrentValue;
                 }
-                //Check for end
-                if (Iteration == WorkingString.Length) { Iteration = 0; };
-
-                //Check if space
-                if (CurrentChar == ' ') ;
-                {
-                    //Iteration++;
-                    break;
-                }
-                if (Finished == true) ;
-                {
-                    return "San";
-                }
-                Iteration++;
             }
-            return "Sans";
         }
+        static bool IsOperator(char Input)
+        {
+            return Char.ToString(Input).Contains("^*/+-");
+        }
+ 
     }
 }
