@@ -43,7 +43,10 @@ namespace AbonCalc
                 //Check for / and *
                 if ((Char.ToString(CurrentChar).Contains("*/+-^")))
                 {
-                   
+                   if ((Char.ToString(CurrentChar).Contains("*/")))
+                   {
+
+                   }
                 }
                 //Check for end
                 if (Iteration == WorkingString.Length) { Iteration = 0; };
