@@ -11,7 +11,7 @@ namespace AbonCalc
             Console.WriteLine("Enter Expression");
             String LastInput = (Console.ReadLine());
 
-            if (LastInput == "Quit")
+            if (LastInput == "Quit" | LastInput == "quit")
             {
                 Console.WriteLine("Quitting");
             }
@@ -24,20 +24,43 @@ namespace AbonCalc
         static string Lexer(string Input)
         {
             //Var Declarations
-            string WorkingString = Input; //The string the lexer works with.
+            System.Text.StringBuilder WorkingString = new System.Text.StringBuilder(Input); //The stringbuilder string the lexer works with.
             float Operand1;
-            string Operator;
+            char Operator;
             float Operand2;
             bool Lexing = true;
-            int Iteration; //The index the lexer is currently working at.
-            string CurrentChar; //The char at the current index.
+            int Iteration = 0; //The index the lexer is currently working at.
+            char CurrentChar = ' '; //The char at the current index.
+            string CurrenrVal;
+            bool Finished = false; //Set to true when no valid operators are found. 
             //Var Declarations
 
             //MAIN WHILE LOOP
             while (Lexing == true)
             {
+                CurrentChar = WorkingString[Iteration];
                 
+                //Check for / and *
+                if ((Char.ToString(CurrentChar).Contains("*/+-^")))
+                {
+                   
+                }
+                //Check for end
+                if (Iteration == WorkingString.Length) { Iteration = 0; };
+
+                //Check if space
+                if (CurrentChar == ' ') ;
+                {
+                    //Iteration++;
+                    break;
+                }
+                if (Finished == true) ;
+                {
+                    return "San";
+                }
+                Iteration++;
             }
+            return "Sans";
         }
     }
 }
