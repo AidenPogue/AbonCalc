@@ -13,24 +13,17 @@ namespace AbonCalc
             String LastInput;
             bool Quit = false;
 
-            while (Quit == false)
-            {
-                LastInput = Console.ReadLine();
-                if (LastInput == "Quit" | LastInput == "quit")
-                {
-                    Console.WriteLine("Quitting");
-                    Quit = true;
-                }
-                else
-                {
-                    //Console.WriteLine(ArrayLexer(LastInput));
-                    string[] Test = ArrayLexer(LastInput);
-                    foreach (string Current in Test)
-                    {
-                        Console.WriteLine(Current);
-                    }
-                }
-            }
+				LastInput = Console.ReadLine();
+				if (LastInput == "Quit" | LastInput == "quit")
+				{
+					Console.WriteLine("Quitting");
+					Quit = true;
+				}
+				else
+				{
+					LexedArrayParser(ArrayLexer(LastInput));
+				}
+			
         }
 
         static string[] ArrayLexer(string Input)
@@ -60,7 +53,7 @@ namespace AbonCalc
                 else
                 {
                     CurrentValue += CurrentChar;
-                    Console.WriteLine(CurrentValue);
+                    //Console.WriteLine(CurrentValue);
                 }
                 Iteration++;
             }
@@ -69,7 +62,50 @@ namespace AbonCalc
         
         static void LexedArrayParser(string[] Input)
         {
+            List<string> InputList = new List<string>(Input); //The list copied from Input that the lexer works with.
+            string[] OperatorArray = { "^", "/*", "+-" }; //BEDMAS ordered operators.
+            string SearchingForOperator = OperatorArray[0]; //The current operator(s) the lexer is searching for
+            int CurrentIndex = 0;
+            float Operand1 = 0;
+            float Operand2 = 0;
+            float LastSolverResult = 0;
+            string Operator = "";
 
+            foreach (string CurrentOperators in OperatorArray)
+            {
+                while (CurrentIndex != InputList.Count)
+                {
+                    string CurrentString = InputList[CurrentIndex];
+
+					if (CurrentOperators.Contains(CurrentString)) //Check for operators.
+					{
+                        //Get slot left of operator for operand 1.
+                        Operand1 = float.Parse(InputList[(CurrentIndex-1)]);
+
+                        //Get slot right of operator for operand 2.
+                        if ((CurrentIndex+1) > InputList.Count)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            Operand2 = float.Parse(InputList[(CurrentIndex + 1)]);
+                        }
+                        InputList[CurrentIndex] = (Solver(CurrentString, Operand1, Operand2)).ToString(); //Solve into the current operator's index
+                        InputList.RemoveAt(CurrentIndex - 1); InputList.RemoveAt(CurrentIndex + 1); //Remove the two adjacent operands.
+                        foreach (String UMom in InputList)
+                        {
+                            Console.WriteLine(UMom);
+                        }
+                    }
+					else
+					{
+						continue;
+					}
+                    CurrentIndex++;
+                }
+            }
+            Console.WriteLine(InputList[0]);
         }
         static float Solver(string Operator, float Val1, float Val2)
         {
