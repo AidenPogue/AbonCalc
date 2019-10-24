@@ -10,19 +10,19 @@ namespace AbonCalc
         {
             Console.WriteLine("AbonCalc - October 2019");
             Console.WriteLine("Enter Expression");
-            String LastInput;
+            string LastInput;
             bool Quit = false;
 
-				LastInput = Console.ReadLine();
-				if (LastInput == "Quit" | LastInput == "quit")
-				{
-					Console.WriteLine("Quitting");
-					Quit = true;
-				}
-				else
-				{
-					LexedArrayParser(ArrayLexer(LastInput));
-				}
+			LastInput = Console.ReadLine();
+			if (LastInput == "Quit" | LastInput == "quit")
+			{
+				Console.WriteLine("Quitting");
+				Quit = true;
+			}
+			else
+			{
+				LexedArrayParser(ArrayLexer(LastInput));
+			}
 			
         }
 
@@ -70,42 +70,29 @@ namespace AbonCalc
             float Operand2 = 0;
             float LastSolverResult = 0;
             string Operator = "";
-
-            foreach (string CurrentOperators in OperatorArray)
+            foreach (string CurrentOperatorString in OperatorArray)
             {
-                while (CurrentIndex != InputList.Count)
+                CurrentIndex = 0;
+                foreach (string CurrentString in InputList)
                 {
-                    string CurrentString = InputList[CurrentIndex];
-
-					if (CurrentOperators.Contains(CurrentString)) //Check for operators.
-					{
-                        //Get slot left of operator for operand 1.
-                        Operand1 = float.Parse(InputList[(CurrentIndex-1)]);
-
-                        //Get slot right of operator for operand 2.
-                        if ((CurrentIndex+1) > InputList.Count)
+                    if (CurrentOperatorString.Contains(CurrentString))
+                    {
+                        //Operator Found
+                        if (CurrentIndex == (InputList.Count-1)) //Check if index is last, and throw error if so.
                         {
-                            break;
+                            Error();
                         }
                         else
                         {
-                            Operand2 = float.Parse(InputList[(CurrentIndex + 1)]);
-                        }
-                        InputList[CurrentIndex] = (Solver(CurrentString, Operand1, Operand2)).ToString(); //Solve into the current operator's index
-                        InputList.RemoveAt(CurrentIndex - 1); InputList.RemoveAt(CurrentIndex + 1); //Remove the two adjacent operands.
-                        foreach (String UMom in InputList)
-                        {
-                            Console.WriteLine(UMom);
+                            
                         }
                     }
-					else
-					{
-						continue;
-					}
-                    CurrentIndex++;
+                    else
+                    {
+                        CurrentIndex++;
+                    }
                 }
             }
-            Console.WriteLine(InputList[0]);
         }
         static float Solver(string Operator, float Val1, float Val2)
         {
@@ -157,6 +144,11 @@ namespace AbonCalc
         static bool IsOperator(char Input)
         {
             return ("^*/+-").Contains(Input);
+        }
+
+        static void Error()
+        {
+            Console.WriteLine("Error Lmao");
         }
 
     }
