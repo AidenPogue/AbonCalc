@@ -34,14 +34,8 @@ namespace AbonCalc
             string CurrentValue = string.Empty; //The current number the lexer is assembling. When and operator is found, this is put into the LexedArray at CurrentIndexInArray and cleared.
             bool Lexing = true; //Controls the while loop. Set to false when last character of Input is reached.
 
-            while (Lexing == true)
+            foreach (char CurrentChar in Input)
             {
-                if (Iteration == (Input.Length) - 1)
-                {
-                    LexedArray[CurrentIndexInArray] = CurrentValue;
-                    Lexing = false;
-                }
-                char CurrentChar = Input[Iteration];
                 if (IsOperator(CurrentChar) == true)
                 {
                     LexedArray[CurrentIndexInArray] = CurrentValue;
@@ -53,7 +47,7 @@ namespace AbonCalc
                 else
                 {
                     CurrentValue += CurrentChar;
-                    //Console.WriteLine(CurrentValue);
+                    Console.WriteLine(CurrentValue);
                 }
                 Iteration++;
             }
@@ -84,7 +78,12 @@ namespace AbonCalc
                         }
                         else
                         {
-                            
+                            Operand1 = float.Parse(InputList[(CurrentIndex - 1)]);
+                            Operand2 = float.Parse(InputList[(CurrentIndex + 1)]);
+                            InputList[CurrentIndex] = (Solver(CurrentString, Operand1, Operand2)).ToString(); //Set CurrentIndex to the result of the current equation.
+                            InputList.RemoveAt((CurrentIndex - 1)); //Remove left operand.
+                            InputList.RemoveAt((CurrentIndex + 1)); //Remove right operand.
+
                         }
                     }
                     else
@@ -93,6 +92,7 @@ namespace AbonCalc
                     }
                 }
             }
+            Console.WriteLine(InputList[0]);
         }
         static float Solver(string Operator, float Val1, float Val2)
         {
