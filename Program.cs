@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AbonCalc
 {
-    class Program
+    class AbonCalcMain
     {
 
         static void Main(string[] args)
@@ -21,7 +21,7 @@ namespace AbonCalc
 			}
 			else
 			{
-				LexedArrayParser(ArrayLexer(LastInput));
+				ArraySolver(ArrayLexer(LastInput));
 			}
 			
         }
@@ -56,7 +56,7 @@ namespace AbonCalc
             return (LexedArray);
         }
         
-        static void LexedArrayParser(string[] Input)
+        static void ArraySolver(string[] Input)
         {
             List<string> InputList = new List<string>(Input); //The list copied from Input that the lexer works with.
             string[] OperatorArray = { "^", "/*", "+-" }; //BEDMAS ordered operators.
