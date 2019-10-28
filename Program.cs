@@ -29,34 +29,30 @@ namespace AbonCalc
         static string[] ArrayLexer(string Input)
         {
             string[] LexedArray = new string[Input.Length]; //The array that lexed parts of the expression are put into. Each number and operator gets a slot.
-            int Iteration = 0; //Iterations of the while loop
             int CurrentIndexInArray = 0; //The current index of the array the lexer is working at.
             string CurrentValue = string.Empty; //The current number the lexer is assembling. When and operator is found, this is put into the LexedArray at CurrentIndexInArray and cleared.
-            bool Lexing = true; //Controls the while loop. Set to false when last character of Input is reached.
 
-            while (Lexing == true)
+            foreach (char CurrentChar in Input)
             {
-                if (Iteration == (Input.Length) - 1)
-                {
-                    LexedArray[CurrentIndexInArray] = CurrentValue;
-                    Lexing = false;
-                }
-                char CurrentChar = Input[Iteration];
                 if (IsOperator(CurrentChar) == true)
                 {
-                    LexedArray[CurrentIndexInArray] = CurrentValue;
-                    CurrentValue = "";
-                    CurrentIndexInArray++;
-                    LexedArray[CurrentIndexInArray] = Char.ToString(CurrentChar);
-                    CurrentIndexInArray++;
+                    LexedArray[CurrentIndexInArray] = CurrentValue; //Put the current value into the current array index.
+                    CurrentIndexInArray++; //Next index for operator.
+                    LexedArray[CurrentIndexInArray] = char.ToString(CurrentChar); //Add operator.
+                    CurrentIndexInArray++; //Next index for next number.
+                    CurrentValue = String.Empty; //Clear the current value for next number.
                 }
-                else
+                else if (IsNumber(CurrentChar) == true) //Check if current char is a number.
                 {
-                    CurrentValue += CurrentChar;
-                    //Console.WriteLine(CurrentValue);
+                    CurrentValue += CurrentChar; //Add current char to the end of the current value.
                 }
-                Iteration++;
+                else //It's neither an operator nor a number. Call the error method.
+                {
+                    Error();
+                }
             }
+            //When we reach the last char in Input and exit the foreach loop, we put the final number into the array.
+            LexedArray[CurrentIndexInArray] = CurrentValue;
             return (LexedArray);
         }
         
@@ -144,6 +140,11 @@ namespace AbonCalc
         static bool IsOperator(char Input)
         {
             return ("^*/+-").Contains(Input);
+        }
+
+        static bool IsNumber(char Input)
+        {
+            return ("0123456789.").Contains(Input);
         }
 
         static void Error()
