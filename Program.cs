@@ -5,6 +5,7 @@ namespace AbonCalc
 {
     class AbonCalcMain
     {
+        public static bool ShowDebugMessages = false;
 
         static void Main(string[] args)
         {
@@ -31,16 +32,37 @@ namespace AbonCalc
             string[] LexedArray = new string[Input.Length]; //The array that lexed parts of the expression are put into. Each number and operator gets a slot.
             int CurrentIndexInArray = 0; //The current index of the array the lexer is working at.
             string CurrentValue = string.Empty; //The current number the lexer is assembling. When and operator is found, this is put into the LexedArray at CurrentIndexInArray and cleared.
+            char CurrentChar = ' ';
+            char LastChar = ' ';
 
-            foreach (char CurrentChar in Input)
+
+            for (int Iteration = 0; Iteration < Input.Length; Iteration++)
             {
+                CurrentChar = Input[Iteration];
                 if (IsOperator(CurrentChar) == true)
                 {
-                    LexedArray[CurrentIndexInArray] = CurrentValue; //Put the current value into the current array index.
-                    CurrentIndexInArray++; //Next index for operator.
-                    LexedArray[CurrentIndexInArray] = char.ToString(CurrentChar); //Add operator.
-                    CurrentIndexInArray++; //Next index for next number.
-                    CurrentValue = String.Empty; //Clear the current value for next number.
+                    //Negative handling.
+                    if (CurrentValue == "")
+                    {
+                        if (CurrentChar == '-')//Check if negative.
+                        {
+                            CurrentValue += "-"; // Add to beginning of current value.
+                        }
+                        else //Call error method if not negative.
+                        {
+                            Error();
+                        }
+
+                    }
+                    else //Not negative.
+                    {
+                        LexedArray[CurrentIndexInArray] = CurrentValue; //Put the current value into the current array index.
+                        DebugMessages("Added " + CurrentValue + " to solving array.");
+                        CurrentIndexInArray++; //Next index for operator.
+                        LexedArray[CurrentIndexInArray] = char.ToString(CurrentChar); //Add operator.
+                        CurrentIndexInArray++; //Next index for next number.
+                        CurrentValue = String.Empty; //Clear the current value for next number.
+                    }
                 }
                 else if (IsNumber(CurrentChar) == true) //Check if current char is a number.
                 {
@@ -50,15 +72,19 @@ namespace AbonCalc
                 {
                     Error();
                 }
+
+                LastChar = CurrentChar;
             }
-            //When we reach the last char in Input and exit the foreach loop, we put the final number into the array.
+            //When we reach the last char in Input and exit the for loop, we put the final number into the array.
             LexedArray[CurrentIndexInArray] = CurrentValue;
+            DebugMessages("Added " + CurrentValue + " to solving array.");
             return (LexedArray);
         }
         
         static void ArraySolver(string[] Input)
         {
             List<string> InputList = new List<string>(Input); //The list copied from Input that the lexer works with.
+            
             string[] OperatorArray = { "^", "/*", "+-" }; //BEDMAS ordered operators.
             string SearchingForOperator = OperatorArray[0]; //The current operator(s) the lexer is searching for
             int CurrentIndex = 0;
@@ -68,26 +94,7 @@ namespace AbonCalc
             string Operator = "";
             foreach (string CurrentOperatorString in OperatorArray)
             {
-                CurrentIndex = 0;
-                foreach (string CurrentString in InputList)
-                {
-                    if (CurrentOperatorString.Contains(CurrentString))
-                    {
-                        //Operator Found
-                        if (CurrentIndex == (InputList.Count-1)) //Check if index is last, and throw error if so.
-                        {
-                            Error();
-                        }
-                        else
-                        {
-                            
-                        }
-                    }
-                    else
-                    {
-                        CurrentIndex++;
-                    }
-                }
+
             }
         }
         static float Solver(string Operator, float Val1, float Val2)
@@ -96,7 +103,7 @@ namespace AbonCalc
             //Operator switchcase
             switch (Operator)
             {
-                default:
+                default: //Should never be used, as ArrayLexer should catch any invalid chars.
                     {
                         Output = 0;
                         Console.WriteLine("Invalid Operator : " + Operator + ".");
@@ -150,6 +157,14 @@ namespace AbonCalc
         static void Error()
         {
             Console.WriteLine("Error Lmao");
+        }
+
+        static void DebugMessages(string Input)
+        {
+            if (AbonCalcMain.ShowDebugMessages == true)
+            {
+                Console.WriteLine("Debug : " + Input);
+            }
         }
 
     }
