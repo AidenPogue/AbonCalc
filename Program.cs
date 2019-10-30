@@ -29,13 +29,20 @@ namespace AbonCalc
                     Console.WriteLine("Quitting");
                     Quit = true;
                 }
-                else if (LastInput == "Clear" | LastInput == "clear" | LastInput == "clr")
-                {
-                    Console.Clear();
-                }
                 else
                 {
-                    ArraySolver(ArrayLexer(LastInput));
+                    if (LastInput == "Clear" | LastInput == "clear" | LastInput == "clr")
+                    {
+                        Console.Clear();
+                    }
+                    else if (LastInput == "")
+                    {
+                        InputHandeller();
+                    }
+                    else
+                    {
+                        ArraySolver(ArrayLexer(LastInput));
+                    }
                 }
             }
         }
@@ -63,7 +70,7 @@ namespace AbonCalc
                         }
                         else //Call error method if not negative.
                         {
-                            Console.WriteLine("Unrecognized or invalid character at index : " +Iteration+ ". This character will be skipped, but the answer might be incorrect.");
+                            InvalidChar(Iteration);
                         }
 
                     }
@@ -71,6 +78,12 @@ namespace AbonCalc
                     {
                         Console.WriteLine("Too many -'s. Aborting evaluation.");
                         InputHandeller();
+                    }
+                    else if (Iteration == Input.Length-1)
+                    {
+                        Console.WriteLine("Unexpected operator at end. Ignoring.");
+                        LexedList.Add(CurrentValue);
+                        return (LexedList);
                     }
                     else //Not negative.
                     {
@@ -88,7 +101,7 @@ namespace AbonCalc
                 }
                 else //It's neither an operator nor a number. Call the error method.
                 {
-                    Error();
+                    InvalidChar(Iteration);
                 }
 
                 LastChar = CurrentChar;
@@ -120,12 +133,20 @@ namespace AbonCalc
                     Operand2 = 0;
                     if (CurrentOperatorString.Contains(CurrentStringInList) == true)
                     {
-                        Operand1 = float.Parse(InputList[(CurrentIndexInList - 1)]); //Get value to left of operator.
-                        Operand2 = float.Parse(InputList[(CurrentIndexInList + 1)]); //Get value to right of operator.
-                        InputList[CurrentIndexInList] = Solver(CurrentStringInList, Operand1, Operand2).ToString(); //Set operator index to current equation result.
-                        InputList.RemoveAt(CurrentIndexInList - 1); //Remove value to left of operator.
-                        InputList.RemoveAt(CurrentIndexInList); //Remove value that *was* to the right of operator, which is now at CurrentIndexInList as everything was shifted to the left by one.
-                        CurrentIndexInList -= 1; //Set current index 2 back to coincide with the removal of both operators.
+                        try  
+                        {
+                            Operand1 = float.Parse(InputList[(CurrentIndexInList - 1)]); //Get value to left of operator.
+                            Operand2 = float.Parse(InputList[(CurrentIndexInList + 1)]); //Get value to right of operator.
+                            InputList[CurrentIndexInList] = Solver(CurrentStringInList, Operand1, Operand2).ToString(); //Set operator index to current equation result.
+                            InputList.RemoveAt(CurrentIndexInList - 1); //Remove value to left of operator.
+                            InputList.RemoveAt(CurrentIndexInList); //Remove value that *was* to the right of operator, which is now at CurrentIndexInList as everything was shifted to the left by one.
+                            CurrentIndexInList -= 1; //Set current index 2 back to coincide with the removal of both operators.
+                        }
+                        catch(ArgumentOutOfRangeException)//This section with throw an argument out of range if something is wrong with the InputList.
+                        {
+                            Console.WriteLine("All characters in expression were invalid. Aborting operation.");
+                            InputHandeller();
+                        }
                     }
                     else
                     {
@@ -194,9 +215,9 @@ namespace AbonCalc
             return ("0123456789.").Contains(Input);
         }
 
-        static void Error()
+        static void InvalidChar(int Index)
         {
-            Console.WriteLine("Error Lmao");
+            Console.WriteLine("Unrecognized or invalid character at index : " + Index + ". This character will be skipped, but the answer might be undesired.");
         }
 
         static void DebugMessages(string Input)
