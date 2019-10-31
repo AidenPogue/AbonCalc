@@ -5,7 +5,8 @@ namespace AbonCalc
 {
     class AbonCalcMain
     {
-        public static bool ShowDebugMessages = false;
+        //Globals
+        public static bool ShowDebugMessages = false; //Controls a few debug messages.
 
         static void Main()
         {
@@ -16,38 +17,61 @@ namespace AbonCalc
         }
         static void InputHandeller()
         {
-            Console.WriteLine("Enter Expression");
-
             string LastInput;
-            bool Quit = false;
 
-            while (Quit == false)
+            for(; ;)
             {
+                Console.WriteLine("Enter Expression");
                 LastInput = Console.ReadLine();
-                if (LastInput == "Quit" | LastInput == "quit")
+
+                //Command switchcase
+                switch(LastInput)
                 {
-                    Console.WriteLine("Quitting");
-                    Quit = true;
-                }
-                else
-                {
-                    if (LastInput == "Clear" | LastInput == "clear" | LastInput == "clr")
-                    {
-                        Console.Clear();
-                    }
-                    else if (LastInput == "")
-                    {
-                        InputHandeller();
-                    }
-                    else
-                    {
-                        ArraySolver(ArrayLexer(LastInput));
-                    }
+
+                    case ("Quit"): //Quit
+                    case ("quit"):
+                        {
+                            Environment.Exit(0);
+                            break;
+                        }
+
+                    case ("Clear"): //Clear
+                    case ("clear"):
+                    case ("clr"):
+                        {
+                            Console.Clear();
+                            break;
+                        }
+                    case (""):
+                        {
+                            InputHandeller();
+                            break;
+                        }
+
+                    default: //Assume that no command means a number. Try to solve.
+                        {
+                            Console.WriteLine("Answer = " + ArraySolver(InputLexer(LastInput)));
+                            break;
+                        }
+
                 }
             }
         }
 
-        static List<string> ArrayLexer(string Input)
+        static string BracketLexer(string Input) //Creates a List where each bracketed expression has it's own index.
+        {
+            char CurrentChar; //The char at the current index the lexer is working at.
+            string CurrentEquation; //New chars are added to this.
+
+            for (int Index = 0; Index < Input.Length; Index++)
+            {
+                CurrentChar = Input[Index];
+
+
+            }
+        }
+
+        static List<string> InputLexer(string Input) //Lexes a string into a List where numbers and operators are separated.
         {
             List<string> LexedList = new List<string>(); //The array that lexed parts of the expression are put into. Each number and operator gets a slot.
             int CurrentIndexInArray = 0; //The current index of the array the lexer is working at.
@@ -112,7 +136,7 @@ namespace AbonCalc
             return (LexedList);
         }
         
-        static void ArraySolver(List<string> InputList)
+        static string ArraySolver(List<string> InputList) //Solves a List created by InputLexer.
         {            
             string[] OperatorArray = { "^", "/*", "+-" }; //BEDMAS ordered operators.
             string SearchingForOperator = OperatorArray[0]; //The current operator(s) the lexer is searching for
@@ -155,7 +179,7 @@ namespace AbonCalc
 
                 }
             }
-            Console.WriteLine("Answer = " + InputList[0]);
+            return (InputList[0]);
         }
         static float Solver(string Operator, float Val1, float Val2)
         {
