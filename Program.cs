@@ -142,7 +142,7 @@ namespace AbonCalc
                             InputList.RemoveAt(CurrentIndexInList); //Remove value that *was* to the right of operator, which is now at CurrentIndexInList as everything was shifted to the left by one.
                             CurrentIndexInList -= 1; //Set current index 2 back to coincide with the removal of both operators.
                         }
-                        catch(ArgumentOutOfRangeException)//This section with throw an argument out of range if something is wrong with the InputList.
+                        catch(ArgumentOutOfRangeException)//The above section will throw an argument out of range if something is wrong with the InputList.
                         {
                             Console.WriteLine("All characters in expression were invalid. Aborting operation.");
                             InputHandeller();
