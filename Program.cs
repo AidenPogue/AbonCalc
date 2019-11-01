@@ -10,9 +10,10 @@ namespace AbonCalc
 
         static void Main()
         {
-            Console.WriteLine("AbonCalc - October 2019");
-            Console.WriteLine("Operators : ^, /, *, +, -");
-            Console.WriteLine("Commands : quit, clear or clr.");
+            Console.WriteLine("AbonCalc - October - November 2019");
+            Console.WriteLine("Operators : ^, /, *, +, -, No bracket support yet.");
+            Console.WriteLine("BEDMAS compliant, expressions with multiple operands are supported.");
+            Console.WriteLine("Commands : quit, clear or clr. \n");
             InputHandeller();
         }
         static void InputHandeller()
@@ -58,18 +59,25 @@ namespace AbonCalc
             }
         }
 
+        /*
         static string BracketLexer(string Input) //Creates a List where each bracketed expression has it's own index.
         {
+            List<string> LexedList = new List<string>();
             char CurrentChar; //The char at the current index the lexer is working at.
             string CurrentEquation; //New chars are added to this.
+            int CurrentStringIndex = 0; //The current index that we are searching from
+            int CurrentListIndex = 0; //The current index in the list. When a new value is added, this is incremented.
+            string CurrentValue = string.Empty; //The current result of lexing. New chars are added to this, and this value is added to the List and cleared when brackets are incountered.
 
-            for (int Index = 0; Index < Input.Length; Index++)
+            for (CurrentStringIndex = 0; CurrentStringIndex < Input.Length; CurrentStringIndex++)
             {
-                CurrentChar = Input[Index];
+                CurrentChar = Input[CurrentStringIndex];
 
-
+                if (CurrentChar)
             }
+
         }
+        */
 
         static List<string> InputLexer(string Input) //Lexes a string into a List where numbers and operators are separated.
         {
@@ -171,6 +179,12 @@ namespace AbonCalc
                             Console.WriteLine("All characters in expression were invalid. Aborting operation.");
                             InputHandeller();
                         }
+                        catch (System.FormatException)
+                        {
+                            Console.WriteLine("Invalid number found, most likley too many decimals.");
+                            InputHandeller();
+                        }
+                        
                     }
                     else
                     {
