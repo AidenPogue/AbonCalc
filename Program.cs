@@ -7,13 +7,18 @@ namespace AbonCalc
     {
         //Globals
         public static bool ShowDebugMessages = false; //Controls a few debug messages.
+        public static decimal LastAnswer = 0;
 
+        static void PrintNews()
+        {
+            Console.WriteLine("Nov 1st 2019 - Changed internal value handling from float to decimal, meaning more precision.");
+        }
         static void Main()
         {
             Console.WriteLine("AbonCalc - October - November 2019");
-            Console.WriteLine("Operators : ^, /, *, +, -, No bracket support yet.");
+            Console.WriteLine("Operators : ^, /, *, +, -, No bracket support yet. '@' = last answer.");
             Console.WriteLine("BEDMAS compliant, expressions with multiple operands are supported.");
-            Console.WriteLine("Commands : quit, clear or clr. \n");
+            Console.WriteLine("Commands : quit, clear / clr, news. \n");
             InputHandeller();
         }
         static void InputHandeller()
@@ -43,6 +48,14 @@ namespace AbonCalc
                             Console.Clear();
                             break;
                         }
+
+                    case ("news"):
+                    case ("News"):
+                        {
+                            PrintNews();
+                            break;
+                        }
+
                     case (""):
                         {
                             InputHandeller();
@@ -51,7 +64,8 @@ namespace AbonCalc
 
                     default: //Assume that no command means a number. Try to solve.
                         {
-                            Console.WriteLine("Answer = " + ArraySolver(InputLexer(LastInput)));
+                            AbonCalcMain.LastAnswer = decimal.Parse(ArraySolver(InputLexer(LastInput)));
+                            Console.WriteLine("Answer = " + LastAnswer);
                             break;
                         }
 
@@ -149,8 +163,8 @@ namespace AbonCalc
             string[] OperatorArray = { "^", "/*", "+-" }; //BEDMAS ordered operators.
             string SearchingForOperator = OperatorArray[0]; //The current operator(s) the lexer is searching for
             int CurrentIndexInList = 0;
-            float Operand1 = 0;
-            float Operand2 = 0;
+            decimal Operand1 = 0;
+            decimal Operand2 = 0;
             string CurrentStringInList = "";
             
             foreach (string CurrentOperatorString in OperatorArray)
@@ -167,8 +181,8 @@ namespace AbonCalc
                     {
                         try  
                         {
-                            Operand1 = float.Parse(InputList[(CurrentIndexInList - 1)]); //Get value to left of operator.
-                            Operand2 = float.Parse(InputList[(CurrentIndexInList + 1)]); //Get value to right of operator.
+                            Operand1 = decimal.Parse(InputList[(CurrentIndexInList - 1)]); //Get value to left of operator.
+                            Operand2 = decimal.Parse(InputList[(CurrentIndexInList + 1)]); //Get value to right of operator.
                             InputList[CurrentIndexInList] = Solver(CurrentStringInList, Operand1, Operand2).ToString(); //Set operator index to current equation result.
                             InputList.RemoveAt(CurrentIndexInList - 1); //Remove value to left of operator.
                             InputList.RemoveAt(CurrentIndexInList); //Remove value that *was* to the right of operator, which is now at CurrentIndexInList as everything was shifted to the left by one.
@@ -179,7 +193,7 @@ namespace AbonCalc
                             Console.WriteLine("All characters in expression were invalid. Aborting operation.");
                             InputHandeller();
                         }
-                        catch (System.FormatException)
+                        catch (System.FormatException) //This only gets thrown when there is multiple decimals, as they don't get skipped by the lexer.
                         {
                             Console.WriteLine("Invalid number found, most likley too many decimals.");
                             InputHandeller();
@@ -195,9 +209,9 @@ namespace AbonCalc
             }
             return (InputList[0]);
         }
-        static float Solver(string Operator, float Val1, float Val2)
+        static decimal Solver(string Operator, decimal Val1, decimal Val2)
         {
-            float Output;
+            decimal Output = 0;
             //Operator switchcase
             switch (Operator)
             {
@@ -211,7 +225,19 @@ namespace AbonCalc
                 case "^":
                     //Power
                     {
-                        Output = MathF.Pow(Val1, Val2);
+                        Output = Val1;
+                        if (Val2 % 1 == 0) //Check if int
+                        {
+                            for (int Iteration = 1; Iteration != Val2; Iteration++) //Math.Pow is fo kidz
+                            {
+                                Output *= Val1;
+                            }
+                        }
+                        else //Not int. Use double for power.
+                        {
+                            Console.WriteLine("Non integer exponent detected. We will need to use a different variable type to do this, so some precision will be lost.");
+                            Output = (decimal)Math.Pow(decimal.ToDouble(Val1), decimal.ToDouble(Val2));
+                        }
                         break;
                     }
                 case "/":
