@@ -12,11 +12,12 @@ namespace AbonCalc
         static void PrintNews()
         {
             Console.WriteLine("Nov 1st 2019 - Changed internal value handling from float to decimal, meaning more precision.");
+            Console.WriteLine("Nov 4th 2019 - Full bracket support. Still some issues with error handling");
         }
         static void Main()
         {
             Console.WriteLine("AbonCalc - October - November 2019");
-            Console.WriteLine("Operators : ^, /, *, +, -, No bracket support yet. '@' = last answer.");
+            Console.WriteLine("Operators : ^, /, *, +, -,");
             Console.WriteLine("BEDMAS compliant, expressions with multiple operands are supported.");
             Console.WriteLine("Commands : quit, clear / clr, news. \n");
             InputHandeller();
@@ -31,26 +32,23 @@ namespace AbonCalc
                 LastInput = Console.ReadLine();
 
                 //Command switchcase
-                switch (LastInput)
+                switch (LastInput.ToUpper())
                 {
 
-                    case ("Quit"): //Quit
-                    case ("quit"):
+                    case ("QUIT"): //Quit
                         {
                             Environment.Exit(0);
                             break;
                         }
 
-                    case ("Clear"): //Clear
-                    case ("clear"):
-                    case ("clr"):
+                    case ("CLR"): //Clear
+                    case ("CLEAR"):
                         {
                             Console.Clear();
                             break;
                         }
 
-                    case ("news"):
-                    case ("News"):
+                    case ("NEWS"):
                         {
                             PrintNews();
                             break;
@@ -99,9 +97,12 @@ namespace AbonCalc
                 {
                     OpenBracketIndex = CurrentIndex;
                     CurrentValue = string.Empty;
-                    if (IsNumber(Output[CurrentIndex-1]) == true)
+                    if (CurrentIndex != 0)
                     {
-                        Output = Output.Insert(CurrentIndex, "*");
+                        if (IsNumber(Output[CurrentIndex - 1]) == true)
+                        {
+                            Output = Output.Insert(CurrentIndex, "*");
+                        }
                     }
                     CurrentIndex++;
 
