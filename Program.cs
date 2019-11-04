@@ -66,7 +66,7 @@ namespace AbonCalc
                         {
                             try //See if we get an OverflowException.
                             {
-                                AbonCalcMain.LastAnswer = decimal.Parse(ArraySolver(InputLexer(LastInput)));
+                                AbonCalcMain.LastAnswer = decimal.Parse(ArraySolver(InputLexer(BracketLexer(LastInput))));
                             }
                             catch(System.OverflowException)
                             {
@@ -81,25 +81,59 @@ namespace AbonCalc
             }
         }
 
-        /*
+        
         static string BracketLexer(string Input) //Creates a List where each bracketed expression has it's own index.
         {
-            List<string> LexedList = new List<string>();
-            char CurrentChar; //The char at the current index the lexer is working at.
-            string CurrentEquation; //New chars are added to this.
-            int CurrentStringIndex = 0; //The current index that we are searching from
-            int CurrentListIndex = 0; //The current index in the list. When a new value is added, this is incremented.
-            string CurrentValue = string.Empty; //The current result of lexing. New chars are added to this, and this value is added to the List and cleared when brackets are incountered.
+            string Output = Input;
+            List<string> BracketLexedList = new List<string>(); //The list that holds the solved equations. Each equation has its own index.
+            string CurrentValue = string.Empty; //New chars are added to this. Cleared at "(" and added to List at ")"
+            char CurrentChar;
+            int OpenBracketIndex = -1;
+            int CurrentIndex = 0;
 
-            for (CurrentStringIndex = 0; CurrentStringIndex < Input.Length; CurrentStringIndex++)
+            while(CurrentIndex < Output.Length)
             {
-                CurrentChar = Input[CurrentStringIndex];
+                CurrentChar = Output[CurrentIndex];
 
-                if (CurrentChar)
+                if (CurrentChar == '(')
+                {
+                    OpenBracketIndex = CurrentIndex;
+                    CurrentValue = string.Empty;
+                    if (IsNumber(Output[CurrentIndex-1]) == true)
+                    {
+                        Output = Output.Insert(CurrentIndex, "*");
+                    }
+                    CurrentIndex++;
+
+                }
+                else if (CurrentChar == ')')
+                {
+                    if (OpenBracketIndex == -1)
+                    {
+                        Console.WriteLine("Misplaced closing bracket. Aborting");
+                        InputHandeller();
+                        
+                    }
+                    else
+                    {
+                        Output = Output.Remove(OpenBracketIndex, (CurrentIndex - OpenBracketIndex + 1));
+                        Output = Output.Insert(OpenBracketIndex, (string)ArraySolver(InputLexer(CurrentValue)));
+                        CurrentValue = string.Empty;
+                        OpenBracketIndex = -1;
+                        CurrentIndex = 0;
+                    }
+                }
+                else
+                {
+                    CurrentValue += CurrentChar;
+                    CurrentIndex++;
+                }
+                
+                
             }
-
+            return Output;
         }
-        */
+        
 
         static List<string> InputLexer(string Input) //Lexes a string into a List where numbers and operators are separated.
         {
