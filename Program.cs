@@ -25,13 +25,13 @@ namespace AbonCalc
         {
             string LastInput;
 
-            for(; ;)
+            for (; ; )
             {
                 Console.WriteLine("Enter Expression");
                 LastInput = Console.ReadLine();
 
                 //Command switchcase
-                switch(LastInput)
+                switch (LastInput)
                 {
 
                     case ("Quit"): //Quit
@@ -64,7 +64,15 @@ namespace AbonCalc
 
                     default: //Assume that no command means a number. Try to solve.
                         {
-                            AbonCalcMain.LastAnswer = decimal.Parse(ArraySolver(InputLexer(LastInput)));
+                            try //See if we get an OverflowException.
+                            {
+                                AbonCalcMain.LastAnswer = decimal.Parse(ArraySolver(InputLexer(LastInput)));
+                            }
+                            catch(System.OverflowException)
+                            {
+                                Console.WriteLine("A number in the input, or the answer was too big. Aborting");
+                                break;
+                            }
                             Console.WriteLine("Answer = " + LastAnswer);
                             break;
                         }
@@ -125,7 +133,7 @@ namespace AbonCalc
                         Console.WriteLine("Too many -'s. Aborting evaluation.");
                         InputHandeller();
                     }
-                    else if (Iteration == Input.Length-1)
+                    else if (Iteration == Input.Length - 1)
                     {
                         Console.WriteLine("Unexpected operator at end. Ignoring.");
                         LexedList.Add(CurrentValue);
@@ -157,16 +165,16 @@ namespace AbonCalc
             DebugMessages("Added " + CurrentValue + " to solving array.");
             return (LexedList);
         }
-        
+
         static string ArraySolver(List<string> InputList) //Solves a List created by InputLexer.
-        {            
+        {
             string[] OperatorArray = { "^", "/*", "+-" }; //BEDMAS ordered operators.
             string SearchingForOperator = OperatorArray[0]; //The current operator(s) the lexer is searching for
             int CurrentIndexInList = 0;
             decimal Operand1 = 0;
             decimal Operand2 = 0;
             string CurrentStringInList = "";
-            
+
             foreach (string CurrentOperatorString in OperatorArray)
             {
                 CurrentIndexInList = 0;
@@ -179,26 +187,26 @@ namespace AbonCalc
                     Operand2 = 0;
                     if (CurrentOperatorString.Contains(CurrentStringInList) == true)
                     {
-                        try  
+                        try
                         {
                             Operand1 = decimal.Parse(InputList[(CurrentIndexInList - 1)]); //Get value to left of operator.
                             Operand2 = decimal.Parse(InputList[(CurrentIndexInList + 1)]); //Get value to right of operator.
                             InputList[CurrentIndexInList] = Solver(CurrentStringInList, Operand1, Operand2).ToString(); //Set operator index to current equation result.
                             InputList.RemoveAt(CurrentIndexInList - 1); //Remove value to left of operator.
                             InputList.RemoveAt(CurrentIndexInList); //Remove value that *was* to the right of operator, which is now at CurrentIndexInList as everything was shifted to the left by one.
-                            CurrentIndexInList -= 1; //Set current index 2 back to coincide with the removal of both operators.
+                            CurrentIndexInList--; //Move index back 1 so we're back on the answer we just got.
                         }
-                        catch(ArgumentOutOfRangeException)//The try block will throw an argument out of range if something is wrong with the InputList.
+                        catch (ArgumentOutOfRangeException)//The try block will throw an argument out of range if there are no valid chars in InputList.
                         {
                             Console.WriteLine("All characters in expression were invalid. Aborting operation.");
                             InputHandeller();
                         }
-                        catch (System.FormatException) //This only gets thrown when there is multiple decimals, as they don't get skipped by the lexer.
+                        catch (System.FormatException) //This only gets thrown when there is multiple decimals, which will get passed to this method because they don't get skipped by the lexer.
                         {
                             Console.WriteLine("Invalid number found, most likley too many decimals.");
                             InputHandeller();
                         }
-                        
+
                     }
                     else
                     {
