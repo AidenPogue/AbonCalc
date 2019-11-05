@@ -68,8 +68,13 @@ namespace AbonCalc
                             }
                             catch(System.OverflowException)
                             {
-                                Console.WriteLine("A number in the input, or the answer was too big. Aborting");
+                                Console.WriteLine("A number in the input or the answer was too big. Aborting");
                                 break;
+                            }
+                            catch (System.FormatException)
+                            {
+                                Console.WriteLine("Invalid number found, most likley too many decimals.");
+                                break;  
                             }
                             Console.WriteLine("Answer = " + LastAnswer);
                             break;
@@ -83,7 +88,6 @@ namespace AbonCalc
         static string BracketLexer(string Input) //Creates a List where each bracketed expression has it's own index.
         {
             string Output = Input;
-            List<string> BracketLexedList = new List<string>(); //The list that holds the solved equations. Each equation has its own index.
             string CurrentValue = string.Empty; //New chars are added to this. Cleared at "(" and added to List at ")"
             char CurrentChar;
             int OpenBracketIndex = -1;
@@ -159,7 +163,7 @@ namespace AbonCalc
                         }
                         else //Call error method if not negative.
                         {
-                            InvalidChar(Iteration);
+                            InvalidChar(Iteration, CurrentChar);
                         }
 
                     }
@@ -190,7 +194,7 @@ namespace AbonCalc
                 }
                 else //It's neither an operator nor a number. Call the error method.
                 {
-                    InvalidChar(Iteration);
+                    InvalidChar(Iteration, CurrentChar);
                 }
 
                 LastChar = CurrentChar;
@@ -322,9 +326,9 @@ namespace AbonCalc
             return ("0123456789.").Contains(Input);
         }
 
-        static void InvalidChar(int Index)
+        static void InvalidChar(int Index, char Char)
         {
-            Console.WriteLine("Unrecognized or invalid character at index : " + Index + ". This character will be skipped, but the answer might be undesired.");
+            Console.WriteLine("Unrecognized or invalid character " + Char + " at index : " + Index + ". This character will be skipped, but the answer might be undesired.");
         }
 
         static void DebugMessages(string Input)
