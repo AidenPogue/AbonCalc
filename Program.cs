@@ -62,7 +62,7 @@ namespace AbonCalc
 
                     default: //Assume that no command means a number. Try to solve.
                         {
-                            try //See if we get an OverflowException.
+                            try
                             {
                                 AbonCalcMain.LastAnswer = decimal.Parse(ArraySolver(InputLexer(BracketLexer(LastInput))));
                             }
@@ -85,12 +85,12 @@ namespace AbonCalc
         }
 
         
-        static string BracketLexer(string Input) //Creates a List where each bracketed expression has it's own index.
+        static string BracketLexer(string Input) //Lexes the input string for brackets and returns the answer to the whole equation.
         {
             string Output = Input;
-            string CurrentValue = string.Empty; //New chars are added to this. Cleared at "(" and added to List at ")"
+            string CurrentValue = string.Empty; //New chars are added to this. Cleared at "("
             char CurrentChar;
-            int OpenBracketIndex = -1;
+            int OpenBracketIndex = -1; //The last open bracket. -1 means that none have been incountered or the last one has been lexed.
             int CurrentIndex = 0;
 
             while(CurrentIndex < Output.Length)
@@ -101,7 +101,7 @@ namespace AbonCalc
                 {
                     OpenBracketIndex = CurrentIndex;
                     CurrentValue = string.Empty;
-                    if (CurrentIndex != 0)
+                    if (CurrentIndex != 0) //Implied multiplication handling.
                     {
                         if (IsNumber(Output[CurrentIndex - 1]) == true)
                         {
@@ -113,7 +113,7 @@ namespace AbonCalc
                 }
                 else if (CurrentChar == ')')
                 {
-                    if (OpenBracketIndex == -1)
+                    if (OpenBracketIndex == -1) //If we find a closing bracket but we haven't found an opening one, we know it was misplaced.
                     {
                         Console.WriteLine("Misplaced closing bracket. Aborting");
                         InputHandeller();
@@ -121,8 +121,8 @@ namespace AbonCalc
                     }
                     else
                     {
-                        Output = Output.Remove(OpenBracketIndex, (CurrentIndex - OpenBracketIndex + 1));
-                        Output = Output.Insert(OpenBracketIndex, (string)ArraySolver(InputLexer(CurrentValue)));
+                        Output = Output.Remove(OpenBracketIndex, (CurrentIndex - OpenBracketIndex + 1)); //Remove the current bracketed equation.
+                        Output = Output.Insert(OpenBracketIndex, (string)ArraySolver(InputLexer(CurrentValue))); //Replace it with its result.
                         CurrentValue = string.Empty;
                         OpenBracketIndex = -1;
                         CurrentIndex = 0;
