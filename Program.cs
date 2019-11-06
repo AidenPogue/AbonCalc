@@ -13,6 +13,7 @@ namespace AbonCalc
         {
             Console.WriteLine("Nov 1st 2019 - Changed internal value handling from float to decimal, meaning more precision.");
             Console.WriteLine("Nov 4th 2019 - Full bracket support. Still some issues with error handling");
+            Console.WriteLine("Nov 5th 2019 - Some extra error handling, including dividing by 0.");
         }
         static void Main()
         {
@@ -76,7 +77,7 @@ namespace AbonCalc
                                 Console.WriteLine("Invalid number found, most likley too many decimals.");
                                 break;  
                             }
-                            Console.WriteLine("Answer = " + LastAnswer);
+                            Console.WriteLine("Answer = " + AbonCalcMain.LastAnswer);
                             break;
                         }
 
@@ -101,12 +102,9 @@ namespace AbonCalc
                 {
                     OpenBracketIndex = CurrentIndex;
                     CurrentValue = string.Empty;
-                    if (CurrentIndex != 0) //Implied multiplication handling.
+                    if (CurrentIndex != 0 && IsNumber(Output[CurrentIndex - 1]) == true) //Implied multiplication handling.
                     {
-                        if (IsNumber(Output[CurrentIndex - 1]) == true)
-                        {
                             Output = Output.Insert(CurrentIndex, "*");
-                        }
                     }
                     CurrentIndex++;
 
@@ -121,8 +119,14 @@ namespace AbonCalc
                     }
                     else
                     {
+                        
+                        if (CurrentIndex != (Output.Length - 1) && IsNumber(Output[(CurrentIndex + 1)]) == true) //Implied multiplication.
+                        {
+                            Output = Output.Insert(CurrentIndex + 1, "*");
+                        }
+                        
                         Output = Output.Remove(OpenBracketIndex, (CurrentIndex - OpenBracketIndex + 1)); //Remove the current bracketed equation.
-                        Output = Output.Insert(OpenBracketIndex, (string)ArraySolver(InputLexer(CurrentValue))); //Replace it with its result.
+                        Output = Output.Insert(OpenBracketIndex, (string)ArraySolver(InputLexer(CurrentValue))); //Replace it with it's result.
                         CurrentValue = string.Empty;
                         OpenBracketIndex = -1;
                         CurrentIndex = 0;
@@ -179,7 +183,7 @@ namespace AbonCalc
                         return (LexedList);
                     }
                     else //Not negative.
-                    {
+                    { 
                         LexedList.Add(CurrentValue); //Put the current value into the current array index.
                         DebugMessages("Added " + CurrentValue + " to solving array.");
                         CurrentIndexInArray++; //Next index for operator.
@@ -290,6 +294,12 @@ namespace AbonCalc
                 case "/":
                     //Divide
                     {
+                        if (Val2 == 0)
+                        {
+                            Console.WriteLine("You can't divide by 0 imbicile");
+                            InputHandeller();
+                        }
+                        
                         Output = Val1 / Val2;
                         break;
                     }
@@ -315,7 +325,6 @@ namespace AbonCalc
 
             return Output;
         }
-
         static bool IsOperator(char Input)
         {
             return ("^*/+-").Contains(Input);

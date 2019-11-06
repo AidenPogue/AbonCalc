@@ -1,9 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <Configurations>Debug;Release;TestRelease</Configurations>
+    <NoWin32Manifest>true</NoWin32Manifest>
+    <StartupObject>AbonCalc.AbonCalcMain</StartupObject>
+    <ApplicationIcon>AcIcon.ico</ApplicationIcon>
+    <SignAssembly>false</SignAssembly>
+    <Company>Abon Software Inc.</Company>
+    <Authors>Abon Software Inc.</Authors>
+    <Description>The most lit calculator of all time.</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="AcIcon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>
